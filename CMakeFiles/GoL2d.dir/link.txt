@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/GoL2d.dir/test.cpp.o -o GoL2d 

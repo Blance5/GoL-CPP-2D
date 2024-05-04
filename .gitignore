@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+GoL2D
+example
+
+
+.vscode
+test
+your_program
