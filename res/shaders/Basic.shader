@@ -13,9 +13,11 @@ void main()
 #shader fragment
 #version 330 core
 
-layout(location = 0) out vec4 color;
+out vec4 FragColor;
 
 void main()
 {
-    color = vec4(1.0, 0.0, 0.0, 1.0);
-};
+    vec3 color = vec3(gl_FragCoord.x / 800.0, gl_FragCoord.y / 600.0, 0.7);
+    
+    FragColor = vec4(color, 1.0);
+}
