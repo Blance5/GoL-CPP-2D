@@ -1,4 +1,3 @@
-
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -7,32 +6,14 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <vector>
-
-const unsigned int ROWS = 3;
-const unsigned int COLS = 3;
 
 
-//using namespace std;
+using namespace std;
 
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
-
-static void draw(int * position, std::vector<unsigned int> & indicies) {
-    int r = position[0];
-    int c  = position[1];
-    //std::cout << "POSITION DATA" << std::endl;
-    //std::cout << r << " " << c << std::endl;
-    indicies.push_back((ROWS + 1) * r + c);
-    indicies.push_back((ROWS + 1) * (r + 1) + c);
-    indicies.push_back((ROWS + 1) * r + c + 1);
-
-    indicies.push_back((ROWS + 1) * (r + 1) + c);
-    indicies.push_back((ROWS + 1) * r + c + 1);
-    indicies.push_back((ROWS + 1) * (r + 1) + c + 1);
-}
 
 static ShaderProgramSource ParseShader(const std::string & filepath) {
     std::ifstream stream(filepath);
@@ -130,57 +111,23 @@ int main(void)
         std::cout << "glewInit Failed!\n";
     }
 
-    /*float positions[] = {
-        -1.0f, 1.0f,  // 0
-        0.0f, 1.0f, // 1
-        1.0f, 1.0f, // 2
-        -1.0f, 0.0f, // 3
-        0.0f, 0.0f, // 4
-        1.0f, 0.0f, // 5
-        -1.0f, -1.0f, // 6
-        0.0f, -1.0f, // 7
-        1.0f, -1.0f // 8
-    };*/
-
-    std::vector<float> positions;
-
-    // populate position buffer
-    for (int i = 0; i < ROWS + 1; i++) {
-        for (int j = 0; j < COLS + 1; j++) {
-            float xval = -1 + (2.0 / ROWS * j);
-            float yval = 1 - (2.0 / COLS * i);
-            positions.push_back(xval);
-            positions.push_back(yval);
-        }
-    }
-
+    float positions[] = {
+        -0.5f, -0.5f, // 0
+        0.5f, -0.5f, // 1
+         0.5f, 0.5f, // 2
+        -0.5f, 0.5f, // 3
+    };
 
     // index buffer
-    std::vector<unsigned int> indicies;
+    unsigned int indicies[] {
+        0, 1, 2,
+        2, 3, 0
+    };
 
-    // populate indicies
-    int toDraw[][2] = {{0, 0}, {2, 0}, {1, 1}, {0, 2}, {2, 2}};
-    int toDraw2[][2] = {{1, 0}, {0, 1}, {1, 2}, {2, 1}};
-
-
-    for (int * position : toDraw2) {
-        draw(position, indicies);
-    }
- 
-     // length of arr should be (ROWS + 1)(COLS + 1)
-    // make static position arr
-    float newPositions[32];
-    std::copy(positions.begin(), positions.end(), newPositions);
-
-    // make static indicies arr
-    unsigned int newIndicies[5 * 3 * 2];
-    std::copy(indicies.begin(), indicies.end(), newIndicies);
-
-    // print from new indicies
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(newPositions), newPositions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
@@ -189,7 +136,7 @@ int main(void)
     unsigned int ibo;
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(newIndicies), newIndicies, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
 
 
     
@@ -212,7 +159,7 @@ int main(void)
         // no index buffer
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         // uses index buffer
-        glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
