@@ -37,3 +37,4 @@ example
 .vscode
 test
 your_program
+build/

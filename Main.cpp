@@ -6,27 +6,12 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <signal.h>
 
 
-using namespace std;
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
-#define ASSERT(x) if (!(x)) exit(1);
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError() {
-    while (glGetError() != GL_NO_ERROR); 
-}
-
-static bool GLLogCall(const char * function, const char * file, int line) {
-    while (GLenum error = glGetError()) {
-        std::cout << "openGL Error code " << error << "  " << function << " " << file << ": " << line << std::endl;
-        return false;
-    }
-    return true;
-}
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -152,19 +137,16 @@ int main(void)
     GLCall(glGenVertexArrays(1, &vao));
     GLCall(glBindVertexArray(vao));
 
-    unsigned int buffer;
-    GLCall(glGenBuffers(1, &buffer));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+
+
+    VertexBuffer vb(positions, sizeof(positions));
 
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
+
     // index buffer object
-    unsigned int ibo;
-    GLCall(glGenBuffers(1, &ibo));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW));
+    IndexBuffer ib(indicies, sizeof(indicies));
 
 
     
@@ -206,8 +188,9 @@ int main(void)
 
         GLCall(glBindVertexArray(vao));
 
-        // i guess you dont need this
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+
+        // not neccesarry, vao binds buffer and ibo
+        ib.Bind();
 
 
         // no index buffer
