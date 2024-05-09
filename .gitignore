@@ -46,3 +46,9 @@ build/*
 /build
 /build
 /build/CMakeFiles/GoL2d.dir
+build/CMakeFiles/GoL2d.dir/build.make
+build/CMakeFiles/GoL2d.dir/cmake_clean.cmake
+build/CMakeFiles/GoL2d.dir/compiler_depend.internal
+build/CMakeFiles/GoL2d.dir/compiler_depend.make
+build/CMakeFiles/GoL2d.dir/DependInfo.cmake
+build/CMakeFiles/GoL2d.dir/link.txt
