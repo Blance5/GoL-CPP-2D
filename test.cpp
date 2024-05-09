@@ -38,20 +38,6 @@ struct ShaderProgramSource {
     std::string FragmentSource;
 };
 
-static void draw(int * position, std::vector<unsigned int> & indicies) {
-    int r = position[0];
-    int c  = position[1];
-    //std::cout << "POSITION DATA" << std::endl;
-    //std::cout << r << " " << c << std::endl;
-    indicies.push_back((ROWS + 1) * r + c);
-    indicies.push_back((ROWS + 1) * (r + 1) + c);
-    indicies.push_back((ROWS + 1) * r + c + 1);
-
-    indicies.push_back((ROWS + 1) * (r + 1) + c);
-    indicies.push_back((ROWS + 1) * r + c + 1);
-    indicies.push_back((ROWS + 1) * (r + 1) + c + 1);
-}
-
 static ShaderProgramSource ParseShader(const std::string & filepath) {
     std::ifstream stream(filepath);
 
@@ -232,18 +218,6 @@ int main(void)
         }
     }
 
-    /*
-    int flag = 0;
-    for (float f : positions) {
-        std::cout << f;
-        if (flag % 2 == 0) {
-            std::cout << " ";
-        } else {
-            std::cout << std::endl;
-        }
-        flag++;
-    }*/
-
 
     // index buffer
     std::vector<unsigned int> indicies;
@@ -266,17 +240,10 @@ int main(void)
         }
     }
 
-    //int neighborCountGrid[ROWS][COLS] = {0};
 
-
-
-    
 
     float newPositions[(COLS + 1) * (ROWS + 1) * 2];
     std::copy(positions.begin(), positions.end(), newPositions);
-
-
-    
 
 
     VertexArray va;
@@ -349,6 +316,9 @@ int main(void)
 
         
         std::copy(indicies.begin(), indicies.end(), newIndicies);
+        for (unsigned int i : newIndicies) {
+            std::cout << i << " ";
+        }
 
         // index buffer object
         IndexBuffer ib(newIndicies, sizeof(unsigned int) * indicies.size());    
