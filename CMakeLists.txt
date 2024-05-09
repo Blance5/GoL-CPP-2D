@@ -18,5 +18,5 @@ find_package(glfw3 REQUIRED)
 include_directories(${GLFW_INCLUDE_DIRS})
 
 # Add your executable and link libraries
-add_executable(GoL2d test.cpp)
+add_executable(GoL2d test.cpp IndexBuffer.cpp Renderer.cpp VertexArray.cpp VertexBuffer.cpp)
 target_link_libraries(GoL2d ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} glfw)
