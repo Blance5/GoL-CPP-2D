@@ -17,8 +17,8 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
-const unsigned int ROWS = 40;
-const unsigned int COLS = 40;
+const unsigned int ROWS = 50;
+const unsigned int COLS = 50;
 
 static void draw(int x, int y, std::vector<unsigned int> & indicies) {
     //std::cout << "POSITION DATA" << std::endl;
@@ -38,19 +38,6 @@ struct ShaderProgramSource {
     std::string FragmentSource;
 };
 
-static void draw(int * position, std::vector<unsigned int> & indicies) {
-    int r = position[0];
-    int c  = position[1];
-    //std::cout << "POSITION DATA" << std::endl;
-    //std::cout << r << " " << c << std::endl;
-    indicies.push_back((ROWS + 1) * r + c);
-    indicies.push_back((ROWS + 1) * (r + 1) + c);
-    indicies.push_back((ROWS + 1) * r + c + 1);
-
-    indicies.push_back((ROWS + 1) * (r + 1) + c);
-    indicies.push_back((ROWS + 1) * r + c + 1);
-    indicies.push_back((ROWS + 1) * (r + 1) + c + 1);
-}
 
 static ShaderProgramSource ParseShader(const std::string & filepath) {
     std::ifstream stream(filepath);
@@ -169,6 +156,7 @@ static void updateSquares(std::vector<int> & activeSquares) {
         }
     }
 
+    /*
     // printing activeGrid
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -177,6 +165,7 @@ static void updateSquares(std::vector<int> & activeSquares) {
         std::cout << std::endl;
     }
     std::cout << std::endl << std::endl;
+    */
 
 
     // update activeSquares
@@ -263,6 +252,9 @@ int main(void)
     VertexArray va;
     VertexBuffer vb(newPositions, sizeof(newPositions));
 
+    VertexBufferLayout layout;
+    layout.Push(2, GL_FLOAT);
+    va.AddBuffer(vb, layout);
 
     unsigned int newIndicies[ROWS * COLS * 6];
 
@@ -308,7 +300,7 @@ int main(void)
 
 
 
-        if (drawRate % 150 == 0) {
+        if (drawRate % 20 == 0) {
             updateSquares(activeSquares);
         }
 
