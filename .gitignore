@@ -38,3 +38,4 @@ example
 test
 your_program
 build/*
+build/
