@@ -17,8 +17,10 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
-const unsigned int ROWS = 16;
-const unsigned int COLS = 16;
+const unsigned int ROWS = 1000;
+const unsigned int COLS = 1000;
+
+
 
 static void draw(int x, int y, std::vector<unsigned int> & indicies) {
     //std::cout << "POSITION DATA" << std::endl;
@@ -110,14 +112,13 @@ static unsigned int CreateShader(const std::string & vertexShader, const std::st
     return program;
 }
 
-static void genActiveGrid(std::vector<int> activeSquares, int (& activeGrid)[ROWS][COLS]) {
+static void genActiveGrid(std::vector<int> activeSquares, int ** activeGrid) {
     for (int i = 0; i < activeSquares.size() - 1; i += 2) {
         activeGrid[activeSquares[i]][activeSquares[i + 1]] = 1;
     }
 }
 
-static void calculateNeighbors(std::vector<int> activeSquares, int (& neighborCountGrid)[ROWS][COLS]) {
-    int activeGrid[ROWS][COLS] = {0};
+static void calculateNeighbors(std::vector<int> activeSquares, int ** neighborCountGrid, int ** activeGrid) {
     genActiveGrid(activeSquares, activeGrid);
     for (int r = 0; r < ROWS; r++) {
         for (int c = 0; c < COLS; c++) {
@@ -139,10 +140,21 @@ static void updateSquares(std::vector<int> & activeSquares) {
         return;
     }
 
-    int neighborCountGrid[ROWS][COLS] = {0};
-    calculateNeighbors(activeSquares, neighborCountGrid);
+    int **activeGrid = new int*[ROWS];
+    int **neighborCountGrid = new int*[ROWS];
+    for (int i = 0; i < ROWS; ++i) {
+        activeGrid[i] = new int[COLS];
+        neighborCountGrid[i] = new int[COLS];
+    }
 
-    int activeGrid[ROWS][COLS] = {0};
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            activeGrid[i][j] = 0;
+            neighborCountGrid[i][j] = 0;
+        }
+    }
+
+    calculateNeighbors(activeSquares, neighborCountGrid, activeGrid);
     genActiveGrid(activeSquares, activeGrid);
 
     // update activeGrid
@@ -167,7 +179,6 @@ static void updateSquares(std::vector<int> & activeSquares) {
     std::cout << std::endl << std::endl;
     */
 
-
     // update activeSquares
     activeSquares.clear();
     for (int i = 0; i < ROWS; i++) {
@@ -178,12 +189,23 @@ static void updateSquares(std::vector<int> & activeSquares) {
             }
         }
     }
+    
+    for (int i = 0; i < ROWS; ++i) {
+        delete[] activeGrid[i];
+        delete[] neighborCountGrid[i];
+    }
+
+    // Free memory for the array of pointers to rows
+    delete[] activeGrid;
+    delete[] neighborCountGrid;
+    
 }
 
 
 
 int main(void)
 {
+    std::cout << "ATHHH";
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -233,7 +255,7 @@ int main(void)
     int random_value = std::rand();
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
-            if (random_value % 4 == 0) {
+            if (random_value % 5 == 0) {
                 activeSquares.push_back(i);
                 activeSquares.push_back(j);
             }
@@ -244,19 +266,19 @@ int main(void)
 
     
 
-    float newPositions[(COLS + 1) * (ROWS + 1) * 2];
+    float *newPositions = new float[(COLS + 1) * (ROWS + 1) * 2];
     std::copy(positions.begin(), positions.end(), newPositions);
 
 
 
     VertexArray va;
-    VertexBuffer vb(newPositions, sizeof(newPositions));
+    VertexBuffer vb(newPositions, sizeof(float) * (COLS + 1) * (ROWS + 1) * 2);
 
     VertexBufferLayout layout;
     layout.Push(2, GL_FLOAT);
     va.AddBuffer(vb, layout);
 
-    unsigned int newIndicies[ROWS * COLS * 6];
+    unsigned int *newIndicies = new unsigned int[ROWS * COLS * 6];
 
     
 
@@ -300,7 +322,7 @@ int main(void)
 
 
 
-        if (drawRate % 20 == 0) {
+        if (drawRate % 1 == 0) {
             updateSquares(activeSquares);
         }
 
@@ -369,6 +391,10 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
+    
+    // freeing memory
+    delete[] newPositions;
+    delete[] newIndicies;
 
     glDeleteProgram(shader);
 
