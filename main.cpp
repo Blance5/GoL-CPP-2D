@@ -164,13 +164,11 @@ static void updateSquares(std::vector<int> & activeSquares) {
             if ((neighborCountGrid[i][j] < 2 || neighborCountGrid[i][j] > 3) && activeGrid[i][j] == 1) {
                 activeGrid[i][j] = 0;
             } else if (neighborCountGrid[i][j] == 3 && activeGrid[i][j] == 0) {
-                std::cout << "HERE\n";
                 activeGrid[i][j] = 1;
             }
         }
     }
 
-    std::cout << "AFTEr\n";
     // printing activeGrid
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -232,18 +230,6 @@ int main(void)
         }
     }
 
-    /*
-    int flag = 0;
-    for (float f : positions) {
-        std::cout << f;
-        if (flag % 2 == 0) {
-            std::cout << " ";
-        } else {
-            std::cout << std::endl;
-        }
-        flag++;
-    }*/
-
 
     // index buffer
     std::vector<unsigned int> indicies;
@@ -266,9 +252,6 @@ int main(void)
         }
     }
 
-    //int neighborCountGrid[ROWS][COLS] = {0};
-
-
 
     
 
@@ -276,17 +259,10 @@ int main(void)
     std::copy(positions.begin(), positions.end(), newPositions);
 
 
-    
-
 
     VertexArray va;
     VertexBuffer vb(newPositions, sizeof(newPositions));
 
-
-    //VA 
-    VertexBufferLayout layout;
-    layout.Push(2, GL_FLOAT);
-    va.AddBuffer(vb, layout);
 
     unsigned int newIndicies[ROWS * COLS * 6];
 
@@ -301,7 +277,7 @@ int main(void)
     //std::cout << source.FragmentSource << std::endl;
     //std::cout << "FRAGMENT" << std::endl;
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    GLCall(glUseProgram(shader));
+    glUseProgram(shader);
 
     GLCall(int location = glGetUniformLocation(shader, "u_Color"));
     ASSERT(location != -1);
