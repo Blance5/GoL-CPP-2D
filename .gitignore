@@ -38,3 +38,8 @@ example
 test
 your_program
 build/
+/build
+/build/
+./build/
+build/*
+/build/*
