@@ -211,7 +211,10 @@ int main(void)
     /* Initialize the library */
     if (!glfwInit())
         return -1;
-    
+
+    GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3));
+    GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3));
+    GLCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
     
  
     /* Create a windowed mode window and its OpenGL context */
@@ -224,6 +227,8 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    GLCall(glfwSwapInterval(1));
 
     if (glewInit() != GLEW_OK) {
         std::cout << "glewInit Failed!\n";
