@@ -17,8 +17,8 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
-const unsigned int ROWS = 50;
-const unsigned int COLS = 50;
+const unsigned int ROWS = 16;
+const unsigned int COLS = 16;
 
 static void draw(int x, int y, std::vector<unsigned int> & indicies) {
     //std::cout << "POSITION DATA" << std::endl;

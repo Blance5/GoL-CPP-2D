@@ -15,8 +15,18 @@ include_directories(${GLEW_INCLUDE_DIRS})
 
 # Find GLFW
 find_package(glfw3 REQUIRED)
-include_directories(${GLFW_INCLUDE_DIRS})
+include_directories(${GLFW_INCLUDE_DIRS}
+                    ${CMAKE_SOURCE_DIR}/include)
+
+set(SOURCES
+    src/Main.cpp
+    src/IndexBuffer.cpp
+    src/Renderer.cpp
+    src/VertexArray.cpp
+    src/VertexBuffer.cpp
+)
+
 
 # Add your executable and link libraries
-add_executable(GoL2d Main.cpp IndexBuffer.cpp Renderer.cpp VertexArray.cpp VertexBuffer.cpp)
+add_executable(GoL2d ${SOURCES})
 target_link_libraries(GoL2d ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} glfw)
