@@ -24,6 +24,7 @@ set(SOURCES
     src/Renderer.cpp
     src/VertexArray.cpp
     src/VertexBuffer.cpp
+    src/Shader.cpp
 )
 
 
