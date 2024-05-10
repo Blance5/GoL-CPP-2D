@@ -10,9 +10,11 @@
 
 #include "Renderer.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "Texture.h"
 
 int main(void)
 {
@@ -46,10 +48,10 @@ int main(void)
     }
 
     float positions[] = {
-        -0.5f, -0.5f, // 0
-        0.5f, -0.5f, // 1
-         0.5f, 0.5f, // 2
-        -0.5f, 0.5f, // 3
+        -0.5f, -0.5f, 0.0f, 0.0f, // 0
+        0.5f, -0.5f, 1.0f, 0.0f,// 1
+        0.5f, 0.5f, 1.0f, 1.0f,// 2
+        -0.5f, 0.5f, 0.0f, 1.0f// 3
     };
 
     // index buffer
@@ -58,6 +60,9 @@ int main(void)
         2, 3, 0
     };
 
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    GLCall(glEnable(GL_BLEND));
+
     VertexArray va;
     VertexBuffer vb(positions, sizeof(positions));
 
@@ -65,6 +70,8 @@ int main(void)
     //VA 
     VertexBufferLayout layout;
     layout.Push(2, GL_FLOAT);
+    layout.Push(2, GL_FLOAT);
+    layout.PrintElements();
     va.AddBuffer(vb, layout);
 
 
@@ -75,10 +82,19 @@ int main(void)
     Shader shader("res/shaders/Basic.shader");
     shader.Bind();
     shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-    shader.Unbind();
+
+    // tex7.jpg is a good cell texture also try 8
+    Texture texture("res/textures/tex3.png");
+    texture.Bind();
+    // slot 0
+    shader.SetUniform1i("u_Texture", 0);
     
+    va.Unbind();
     vb.Unbind();
     ib.Unbind();
+    shader.Unbind();
+
+    Renderer renderer;
 
 
     float r = 0.0f;
@@ -87,27 +103,24 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.Clear();
 
         shader.Bind();
         shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+
+
+        // DRAW CALL
+        renderer.Draw(va, ib, shader);
 
         /*GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
         GLCall(glEnableVertexAttribArray(0));
         GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));*/
 
-
-        va.Bind();
-        // not neccesarry, vao binds buffer and ibo
-        ib.Bind();
+        
 
 
-        // no index buffer
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
-        // uses index buffer
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
         if (r > 1.0f) {
             increment = -0.003f;
         } else if (r < 0.0f) {

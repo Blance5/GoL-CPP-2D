@@ -16,7 +16,8 @@ include_directories(${GLEW_INCLUDE_DIRS})
 # Find GLFW
 find_package(glfw3 REQUIRED)
 include_directories(${GLFW_INCLUDE_DIRS}
-                    ${CMAKE_SOURCE_DIR}/include)
+                    ${CMAKE_SOURCE_DIR}/include
+                    ${CMAKE_SOURCE_DIR}/include/vendor)
 
 set(SOURCES
     src/Main.cpp
@@ -25,6 +26,8 @@ set(SOURCES
     src/VertexArray.cpp
     src/VertexBuffer.cpp
     src/Shader.cpp
+    src/Texture.cpp
+    src/vendor/stb_image.cpp
 )
 
 

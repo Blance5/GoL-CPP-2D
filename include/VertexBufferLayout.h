@@ -31,6 +31,15 @@ class VertexBufferLayout {
 
         }
 
+        void PrintElements() {
+            for (int i = 0; i < m_Elements.size(); i++) {
+                std::cout << "Element " << i << ":\n";
+                std::cout << "Type: " << m_Elements[i].type << "\n";
+                std::cout << "Count: " << m_Elements[i].count << "\n";
+                std::cout << "Normalized: " << (int) m_Elements[i].normalized << "\n" << std::endl;
+            }
+        }
+
         // test
         void Push(unsigned int count, unsigned int gl_type) {
             switch (gl_type) {
