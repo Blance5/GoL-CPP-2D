@@ -1,2 +1,5 @@
 glfw
 glew 2.1
+stb_image
+glm-0.9.8.5
+imgui-1.90.6
