@@ -42,7 +42,7 @@ int main(void)
     
  
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1200, 980, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1910, 1175, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -59,10 +59,10 @@ int main(void)
     }
 
     float positions[] = {
-        100.0f, 100.0f, 0.0f, 0.0f, // 0
-        200.0f, 100.0f, 1.0f, 0.0f,// 1
-        200.0f, 200.0f, 1.0f, 1.0f,// 2
-        100.0f, 200.0f, 0.0f, 1.0f// 3
+        0.0f, 0.0f, 0.0f, 0.0f, // 0
+        1910.0f, 0.0f, 1.0f, 0.0f,// 1
+        1910.0f, 1175.0f, 1.0f, 1.0f,// 2
+        0.0f, 1175.0f, 0.0f, 1.0f// 3
     };
 
     // index buffer
@@ -90,8 +90,8 @@ int main(void)
     IndexBuffer ib(indicies, sizeof(indicies));
 
 
-    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+    glm::mat4 proj = glm::ortho(0.0f, 1910.0f, 0.0f, 1175.0f, -1.0f, 1.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
     glm::mat4 model;
     glm::mat4 mvp;
 
@@ -124,7 +124,7 @@ int main(void)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    glm::vec3 translation(200, 200, 0);
+    glm::vec3 translation(0, 0, 0);
 
     float r = 0.0f;
     float increment = 0.05f;
@@ -148,6 +148,14 @@ int main(void)
         shader.Bind();
         shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
         shader.SetUniformMat4f("u_MVP", mvp);
+        // Set the resolution uniform
+        int width = 1910;
+        int height = 1175; // Get the width and height of your rendering window
+        glUniform2f(glGetUniformLocation(shader.GetRendererID(), "iResolution"), (float)width, (float)height);
+
+        // Set the time uniform
+        float time = glfwGetTime(); // Get the current time in seconds
+        glUniform1f(glGetUniformLocation(shader.GetRendererID(), "iTime"), time);
 
         // DRAW CALL
         renderer.Draw(va, ib, shader);
@@ -156,10 +164,13 @@ int main(void)
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         static float f = 0.0f;
+
+        /*
         ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
         ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
         ImGui::End();
+        */
 
 
         /*GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
